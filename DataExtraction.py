@@ -7,7 +7,7 @@ import time
 
 start = time.time()
 
-trippath = '../small_trip_data'
+trippath = '../single_trip_data'
 taxiShapefilePath = '../taxi_zones/taxi_zones.shp'
 taxiZoneLookupPath = '../taxi_zone_lookup.csv'
 
@@ -92,7 +92,7 @@ print('It took {0:0.1f} seconds to initialize.'.format(time.time() - start))
 fileNum = 0
 for a_file in all_trip_files:
     print("reading in " + a_file + "...")
-    fileNum += 0
+    fileNum += 1
     #Gathering Trip Data
     dft = pd.read_csv(a_file,index_col=False, header=0, usecols=[5,6,7,8,9,10,11,12,13])
     dft.columns = dft.columns.str.strip() #stripping whitespace from headers
