@@ -105,6 +105,7 @@ for a_file in all_trip_files:
     dft = pd.read_csv(a_file,index_col=None, header=0)
     print("read complete")
     dft.columns = dft.columns.str.strip() #stripping whitespace from headers
+    dft.drop(['medallion','hack_license','vendor_id','rate_code','store_and_fwd_flag'], axis = 1, inplace = True)
     dft = dft.apply(findZipOGR,args=(lyr_in, idx_reg, zoneLookup, ctran),axis = 1)   
     dft = dft[
         ((dft['pickup_neighborhood'].isin(Astoria)) #From Astoria to Manhattan
