@@ -7,7 +7,7 @@ import time
 
 start = time.time()
 
-trippath = '../trip_data'
+trippath = '../small_trip_data'
 taxiShapefilePath = '../taxi_zones/taxi_zones.shp'
 taxiZoneLookupPath = '../taxi_zone_lookup.csv'
 
@@ -17,38 +17,24 @@ Midtown = ['Midtown Center','Midtown North','Midtown South','Midtown East']
 UpperEastSide = ['Upper East Side North','Upper East Side South']
 
 UpperManhattanLat = 40.76
+NYCN = 40.92
+NYCS = 40.49
+NYCW = -74.26
+NYCE = -73.69
+
 
 print("Starting program...")
     
 def clean_dfs():
     pass
-
-#from geopy.geocoders import Nominatim
-#from geopy.exc import GeocoderTimedOut
-#geolocator = Nominatim(timeout=10)
-#geopy reverse geocoding. Servers can't handle this many requests though 
-#def findZipGeopy(series):
-#    pickup_location = geolocator.reverse(str(series['pickup_latitude']) + ',' + str(series['pickup_longitude']))
-#    dropoff_location = geolocator.reverse(str(series['dropoff_latitude']) + ',' + str(series['dropoff_longitude']))
-#    try:
-#        series['pickup_zip'] = int(pickup_location.raw['address']['postcode'])
-#        series['pickup_neighborhood'] = pickup_location.raw['address']['neighbourhood']
-#        series['dropoff_zip'] = int(dropoff_location.raw['address']['postcode'])
-#        series['dropoff_neighborhood'] = dropoff_location.raw['address']['neighbourhood']
-#    except:
-#        series['pickup_zip'] = 99999
-#        series['pickup_neighborhood'] = 'N/A'
-#        series['dropoff_zip'] = 99999
-#        series['dropoff_neighborhood'] = 'N/A'
-#    return series
     
 #Reverse geocoding using the nyc.gov provided shapefile and OGR
 #OGR: OpenGIS Simple Features Reference Implementation
 #GDAL: Geospatial Data Abstraction Library
 def findZipOGR(series, lyr_in, idx_reg, zoneLookup, ctran):
-    pickup_location = reverseGeocode(series['pickup_longitude'], series['pickup_latitude'], lyr_in, idx_reg, zoneLookup, ctran)
-    dropoff_location = reverseGeocode(series['dropoff_longitude'], series['dropoff_latitude'], lyr_in, idx_reg, zoneLookup, ctran)
     try:
+        pickup_location = reverseGeocode(series['pickup_longitude'], series['pickup_latitude'], lyr_in, idx_reg, zoneLookup, ctran)
+        dropoff_location = reverseGeocode(series['dropoff_longitude'], series['dropoff_latitude'], lyr_in, idx_reg, zoneLookup, ctran)
         series['pickup_borough'] = pickup_location[0]
         series['pickup_neighborhood'] = pickup_location[1]
         series['dropoff_borough'] = dropoff_location[0]
@@ -61,6 +47,10 @@ def findZipOGR(series, lyr_in, idx_reg, zoneLookup, ctran):
     return series
     
 def reverseGeocode(lon, lat, lyr_in, idx_reg, zoneLookup, ctran):
+    #See if our point is outside the outermost bounds of NYC
+    if (lon < NYCW) or (NYCE < lon) or (lat < NYCS) or (NYCN < lat):
+            return ('NA','NA')
+
     #Transform incoming longitude/latitude to the shapefile's projection
     [lon,lat,z]=ctran.TransformPoint(lon,lat)
 
@@ -97,15 +87,17 @@ ctran = ogr.osr.CoordinateTransformation(point_ref,geo_ref)
 all_trip_files = glob.glob(trippath + '/*.csv')
 #frames_list = []
 
+print('It took {0:0.1f} seconds to initialize.'.format(time.time() - start))
+
 fileNum = 0
 for a_file in all_trip_files:
     print("reading in " + a_file + "...")
     fileNum += 0
     #Gathering Trip Data
-    dft = pd.read_csv(a_file,index_col=None, header=0)
-    print("read complete")
+    dft = pd.read_csv(a_file,index_col=False, header=0, usecols=[5,6,7,8,9,10,11,12,13])
     dft.columns = dft.columns.str.strip() #stripping whitespace from headers
-    dft.drop(['medallion','hack_license','vendor_id','rate_code','store_and_fwd_flag'], axis = 1, inplace = True)
+    print('It took {0:0.1f} seconds to read that file'.format(time.time() - start))
+
     dft = dft.apply(findZipOGR,args=(lyr_in, idx_reg, zoneLookup, ctran),axis = 1)   
     dft = dft[
         ((dft['pickup_neighborhood'].isin(Astoria)) #From Astoria to Manhattan
@@ -142,9 +134,9 @@ for a_file in all_trip_files:
         ]
     print('It took {0:0.1f} seconds to process that file'.format(time.time() - start))
     #Gathering Fare Data
-    dff = pd.read_csv(a_file.replace('data','fare'),index_col=None, header=0)
+    dff = pd.read_csv(a_file.replace('data','fare'),index_col=False, header=0,usecols=[4,5,6,7,8,9,10])
     dff.columns = dff.columns.str.strip() #stripping whitespace from headers
-    dft = dft.join(dff[['payment_type','fare_amount','surcharge','mta_tax','tip_amount','tolls_amount','total_amount']], how = 'inner')
+    dft = dft.join(dff, how = 'inner')
     dft.to_pickle(str(fileNum) + "_df")
 
     print('It took {0:0.1f} seconds to add in fare data'.format(time.time() - start))
