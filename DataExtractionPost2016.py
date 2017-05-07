@@ -47,9 +47,7 @@ def cleanData(monthrange):
     #gdf = readData(trippath, 'green_taxi',lyr_in, idx_reg, zoneLookup, ctran)
     #ydf = readData(trippath, 'yellow_taxi',lyr_in, idx_reg, zoneLookup, ctran)
     #return pd.concat([gdf,ydf])
-    
-    print('It took {0:0.1f} seconds to initialize.'.format(time.time() - start))
-    
+     
         
 def readData(trippath,folder,lyr_in, idx_reg, zoneLookup, ctran):
     
@@ -64,10 +62,10 @@ def readData(trippath,folder,lyr_in, idx_reg, zoneLookup, ctran):
         #Gathering Trip Data. Unfortunately yellow and green cabs have different data formats.
         df = pd.DataFrame()
         if 'green' in folder:
-            df = pd.read_csv(a_file,index_col=False, header=0, usecols=[1,2,5,6,7,8,9,10,11,12,13,14,15,17,18,19])
+            df = pd.read_csv(a_file,index_col=False, header=0, skiprows = 2, usecols=[1,2,5,6,7,8,9,10,11,12,13,14,15,17,18,19])
             df.columns = ['pickup_datetime','dropoff_datetime','pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','passenger_count','trip_distance','fare_amount','extra','mta_tax','tip_amount','tolls_amount','improvement_surcharge','total_amount','payment_type']
         elif 'yellow' in folder:
-            df = pd.read_csv(a_file,index_col=False, header=0, usecols=[1,2,3,4,5,6,9,10,11,12,13,14,15,16,17,18])
+            df = pd.read_csv(a_file,index_col=False, header=0, skiprows = 2, usecols=[1,2,3,4,5,6,9,10,11,12,13,14,15,16,17,18])
             df.columns = ['pickup_datetime','dropoff_datetime','passenger_count','trip_distance','pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','payment_type','fare_amount','extra','mta_tax','tip_amount','tolls_amount','improvement_surcharge','total_amount']
         else:
             raise Exception("ERROR: cannot find folder of name " + folder)
@@ -116,7 +114,7 @@ def readData(trippath,folder,lyr_in, idx_reg, zoneLookup, ctran):
         
     #return pd.concat(dfList)
 
-    print('It took {0:0.1f} seconds to add in fare data'.format(time.time() - start))
+    #print('It took {0:0.1f} seconds to add in fare data'.format(time.time() - start))
     #frames_list.append(df)
     
 #Reverse geocoding using the nyc.gov provided shapefile and OGR
