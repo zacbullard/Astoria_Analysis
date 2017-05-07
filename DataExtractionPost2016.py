@@ -4,12 +4,15 @@ import pandas as pd
 import glob as glob
 import ogr
 import time
+import os
+import sys
 
 start = time.time()
+filePath = os.path.dirname(os.path.realpath(__file__))
 
-trippath = '../small2016TaxiData/'
-taxiShapefilePath = '../taxi_zones/taxi_zones.shp'
-taxiZoneLookupPath = '../taxi_zone_lookup.csv'
+trippath = filePath + '/../small2016TaxiData/'
+taxiShapefilePath = filePath + '/../taxi_zones/taxi_zones.shp'
+taxiZoneLookupPath = filePath + '/../taxi_zone_lookup.csv'
 
 #Regions of interest as defined by nyc.gov's taxi zoning
 Astoria = ['Astoria','Astoria Park']
@@ -22,7 +25,7 @@ NYCS = 40.49
 NYCW = -74.26
 NYCE = -73.69
 
-def cleanData():
+def cleanData(monthrange):
     zoneLookup = pd.read_csv(taxiZoneLookupPath, index_col = 0, header=0)     
 
     #Preparing the necessary overhead to reverse geocode from the NYC shapefile 
@@ -39,8 +42,8 @@ def cleanData():
     ctran = ogr.osr.CoordinateTransformation(point_ref,geo_ref)
     
     
-    readData(trippath, 'green_taxi',lyr_in, idx_reg, zoneLookup, ctran)
-    readData(trippath, 'yellow_taxi',lyr_in, idx_reg, zoneLookup, ctran)
+    readData(trippath, 'greenTaxi'+monthrange,lyr_in, idx_reg, zoneLookup, ctran)
+    readData(trippath, 'yellowTaxi'+monthrange,lyr_in, idx_reg, zoneLookup, ctran)
     #gdf = readData(trippath, 'green_taxi',lyr_in, idx_reg, zoneLookup, ctran)
     #ydf = readData(trippath, 'yellow_taxi',lyr_in, idx_reg, zoneLookup, ctran)
     #return pd.concat([gdf,ydf])
@@ -57,13 +60,13 @@ def readData(trippath,folder,lyr_in, idx_reg, zoneLookup, ctran):
     for a_file in all_trip_files:
         
         fileNum += 1
-        print("reading in " + trippath + folder + str(fileNum) + "...")
+        print("reading in " + a_file + "...")
         #Gathering Trip Data. Unfortunately yellow and green cabs have different data formats.
         df = pd.DataFrame()
-        if folder == 'green_taxi':
+        if 'green' in folder:
             df = pd.read_csv(a_file,index_col=False, header=0, usecols=[1,2,5,6,7,8,9,10,11,12,13,14,15,17,18,19])
             df.columns = ['pickup_datetime','dropoff_datetime','pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','passenger_count','trip_distance','fare_amount','extra','mta_tax','tip_amount','tolls_amount','improvement_surcharge','total_amount','payment_type']
-        elif folder == 'yellow_taxi':
+        elif 'yellow' in folder:
             df = pd.read_csv(a_file,index_col=False, header=0, usecols=[1,2,3,4,5,6,9,10,11,12,13,14,15,16,17,18])
             df.columns = ['pickup_datetime','dropoff_datetime','passenger_count','trip_distance','pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','payment_type','fare_amount','extra','mta_tax','tip_amount','tolls_amount','improvement_surcharge','total_amount']
         else:
@@ -161,7 +164,7 @@ def reverseGeocode(lon, lat, lyr_in, idx_reg, zoneLookup, ctran):
 if __name__ == '__main__':
     print("Starting program...")
 
-    cleanData()
+    cleanData(sys.argv[1])
     #df = cleanData()
     #df.to_pickle("astoria_trips_df")
     print('It took {0:0.1f} seconds to complete the run'.format(time.time() - start))

@@ -10,5 +10,5 @@ for a_file in all_trip_files:
     df_list.append(df)
 
 df = pd.concat(df_list)
-print(type(df['pickup_datetime'].iloc[1]))
+print(df.size)
 
