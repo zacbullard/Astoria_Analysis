@@ -1,3 +1,6 @@
 import pandas as pd
 
-mydf = pd.read_pickle("astoria_trips_df")
+df = pd.read_pickle("/home/z/ViaChallenge/sample_data_df")
+
+print(type(df['pickup_datetime'].iloc[1]))
+
