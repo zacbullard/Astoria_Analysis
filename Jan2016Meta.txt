@@ -1,0 +1,83 @@
+UMid
+
+Total Taxi Count: 42817
+Total Carpool Count: 22305
+Car Reduction Ratio: 0.52
+Mile Reduction: 42514.65
+CO2 Reduction (Tons): 19.26
+Total Fare: 472576.00
+Mean Passengers Per Taxi: 1.62
+
+
+
+MA
+
+Total Taxi Count: 29331
+Total Carpool Count: 20439
+Car Reduction Ratio: 0.70
+Mile Reduction: 72506.10
+CO2 Reduction (Tons): 32.85
+Total Fare: 413641.85
+Mean Passengers Per Taxi: 1.62
+
+
+
+AA
+
+Total Taxi Count: 23696
+Total Carpool Count: 11567
+Car Reduction Ratio: 0.49
+Mile Reduction: 9844.23
+CO2 Reduction (Tons): 4.46
+Total Fare: 136147.10
+Mean Passengers Per Taxi: 1.55
+
+
+
+MidU
+
+Total Taxi Count: 43614
+Total Carpool Count: 22849
+Car Reduction Ratio: 0.52
+Mile Reduction: 43923.16
+CO2 Reduction (Tons): 19.90
+Total Fare: 421993.52
+Mean Passengers Per Taxi: 1.65
+
+
+
+AAll
+
+Total Taxi Count: 100096
+Total Carpool Count: 66793
+Car Reduction Ratio: 0.67
+Mile Reduction: 198529.92
+CO2 Reduction (Tons): 89.94
+Total Fare: 1260799.45
+Mean Passengers Per Taxi: 1.62
+
+
+
+UU
+
+Total Taxi Count: 50195
+Total Carpool Count: 27217
+Car Reduction Ratio: 0.54
+Mile Reduction: 17699.75
+CO2 Reduction (Tons): 8.02
+Total Fare: 261275.53
+Mean Passengers Per Taxi: 1.65
+
+
+
+AM
+
+Total Taxi Count: 26098
+Total Carpool Count: 17631
+Car Reduction Ratio: 0.68
+Mile Reduction: 44808.93
+CO2 Reduction (Tons): 20.30
+Total Fare: 286434.59
+Mean Passengers Per Taxi: 1.55
+It took 602.4 seconds to finish the run.
+
