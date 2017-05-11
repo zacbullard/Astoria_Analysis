@@ -1,6 +1,7 @@
 #Extracts, cleans, and reverse geocaches taxi data collected from 2015 onwards.
-#Dependencies: GDAL/OGR, pandas
-#Command Line Argument: path to the raw .csv taxi files as provided by nyc.gov relative to this script.
+#Dependencies: GDAL/OGR, pandas, nyc.gov shapefiles and zone lookup .csv
+#Command Line Argument: path to folder containing the raw .csv taxi files as provided by nyc.gov, relative to this script.
+#Note that the filenames must either have the string "green" or "yellow" in it, as these two taxi types have different .csv header ordering.
 
 import pandas as pd
 import glob as glob
@@ -26,7 +27,7 @@ NYCS = 40.49
 NYCW = -74.26
 NYCE = -73.69
 
-def cleanData(csvFolderName):
+def cleanData(rawDataFolder):
     zoneLookup = pd.read_csv(taxiZoneLookupPath, index_col = 0, header=0)     
 
     #Preparing the necessary overhead to reverse geocode from the NYC shapefile 
@@ -47,24 +48,21 @@ def cleanData(csvFolderName):
         
 def readData(filePath,rawDataFolder,lyr_in, idx_reg, zoneLookup, ctran):
     
-    all_trip_files = glob.glob(filePath + rawDataFolder + '/*.csv')
+    all_trip_files = glob.glob(filePath + "/" + rawDataFolder + '*.csv')
     
-    fileNum = 0
-    #dfList = []
     for a_file in all_trip_files:
         
-        fileNum += 1
         print("reading in " + a_file + "...")
         #Gathering Trip Data. Unfortunately yellow and green cabs have different data formats.
         df = pd.DataFrame()
-        if 'green' in folder:
+        if 'green' in a_file:
             df = pd.read_csv(a_file,index_col=False, header=0, skiprows = 2, usecols=[1,2,5,6,7,8,9,10,11,12,13,14,15,17,18,19])
             df.columns = ['pickup_datetime','dropoff_datetime','pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','passenger_count','trip_distance','fare_amount','extra','mta_tax','tip_amount','tolls_amount','improvement_surcharge','total_amount','payment_type']
-        elif 'yellow' in folder:
+        elif 'yellow' in a_file:
             df = pd.read_csv(a_file,index_col=False, header=0, skiprows = 2, usecols=[1,2,3,4,5,6,9,10,11,12,13,14,15,16,17,18])
             df.columns = ['pickup_datetime','dropoff_datetime','passenger_count','trip_distance','pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','payment_type','fare_amount','extra','mta_tax','tip_amount','tolls_amount','improvement_surcharge','total_amount']
         else:
-            raise Exception("ERROR: cannot find folder of name " + folder)
+            raise Exception("ERROR: cannot find folder of name " + rawDataFolder + ", or it doesn't have 'green' or 'yellow' in the filename.")
         
         print('It took {0:0.1f} seconds to read that file'.format(time.time() - start))
     
@@ -104,7 +102,7 @@ def readData(filePath,rawDataFolder,lyr_in, idx_reg, zoneLookup, ctran):
             ]
         
         print('It took {0:0.1f} seconds to process that file'.format(time.time() - start))
-        df.to_pickle(filePath +'/processedData/'+folder+str(fileNum))
+        df.to_pickle(filePath +'/processedData/'+a_file)
     
 #Reverse geocoding using the nyc.gov provided shapefile and OGR
 #OGR: OpenGIS Simple Features Reference Implementation
@@ -150,6 +148,9 @@ def reverseGeocode(lon, lat, lyr_in, idx_reg, zoneLookup, ctran):
 
 if __name__ == '__main__':
     print("Starting program...")
+
+    if sys.argv[1] is None:
+        raise Exception("ERROR: must submit command-line argument of path to raw .csv files.")
 
     cleanData(sys.argv[1])
 
