@@ -19,7 +19,7 @@ Midtown = ['Midtown Center','Midtown North','Midtown South','Midtown East']
 UpperEastSide = ['Upper East Side North','Upper East Side South']
 
 #Lower cut-off latitude for destinations requiring the Queensboro bridge or Kennedy F. Kennedy Bridge from LGA,
-#Which nessesitates traveling through/near Astoria, as approximated by Google Maps routing.
+#Which necessitates traveling through/near Astoria, as approximated by Google Maps routing.
 UpperManhattanLat = 40.76
 
 #Our goal for number of passengers per carpool
@@ -130,9 +130,9 @@ def calcCarpools(series):
         
     return series
 
-#To calculate the extra carpooling opportunites afforded by traffic betwix LGA and Upper Manhattan,
+#To calculate the extra carpooling opportunities afforded by traffic betwixt LGA and Upper Manhattan,
 #we merge commuters starting from LGA and Astoria heading to Manhattan,
-#but time-shift the flyers by the time it takes them to get near Astoria.
+#but time-shift the fliers by the time it takes them to get near Astoria.
 def findCommuteAirport(dfLU,dfUL,dfAM,dfMA,dfLA,dfAL):
 
     #The following trips do not have a pickup or dropoff in Astoria, but do pass through it.
@@ -148,7 +148,7 @@ def findCommuteAirport(dfLU,dfUL,dfAM,dfMA,dfLA,dfAL):
 if __name__ == '__main__':
     df = readFiles()
     
-    #We analyze the data pertaning to the neibhoorhoods in question.
+    #We analyze the data pertaining to the neighborhoods in question.
     
     dfAA = df[((df['dropoff_neighborhood'].isin(Astoria)) #Within Astoria 
             & (df['pickup_neighborhood'].isin(Astoria)))] 
@@ -173,7 +173,7 @@ if __name__ == '__main__':
     dfAL = df[((df['dropoff_neighborhood'].isin(['LaGuardia Airport'])) #From Astoria to LGA
             & (df['pickup_neighborhood'].isin(Astoria)))]
     
-    dfAAll = findCommuteAirport(dfLU,dfUL,dfAM,dfMA,dfLA,dfAL) #From Astoria to Manhattn and Manhattan to Astoria, but with LGA traffic
+    dfAAll = findCommuteAirport(dfLU,dfUL,dfAM,dfMA,dfLA,dfAL) #From Astoria to Manhattan and Manhattan to Astoria, but with LGA traffic
 
     dfUMid = df[((df['pickup_neighborhood'].isin(UpperEastSide)) #From Upper East Side to Midtown
             & (df['dropoff_neighborhood'].isin(Midtown)))] 
