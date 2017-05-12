@@ -102,6 +102,7 @@ Making Business Sense
 While there will always be a market for single-rides, by calculating a theoretical all-carpool market, we can gauge the potential for Via service, and compare it to other known neighborhoods. The more cars that can be eliminated by carpooling, the more effective each carpool is. Thus I define 
 - carpool potential = taxi_count - carpool_count
 - carpool efficiency =  carpool_count/taxi_count
+
 Why these two indicators? Carpooling efficiency is essentially the margin for carpooling; some routes have demand such that they are simply lend themselves to carpooling more readily. However, we shouldn't ignore the absolute number of rides that can be eliminated, which is our carpool potential. 
 
 Caveats and Assumptions
