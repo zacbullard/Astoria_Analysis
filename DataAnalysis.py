@@ -1,4 +1,4 @@
-#Calculates commuter efficiency
+#Calculates commuter efficiency and potential
 import pandas as pd
 import numpy as np
 import glob as glob
@@ -52,7 +52,7 @@ def readFiles():
     df['dropoff_datetime'] = pd.to_datetime(df['dropoff_datetime'])
     return df
 
-#Seperate out the different destination or arrival neighborhoods,
+#Separate out the different destination or arrival neighborhoods,
 #and perform analysis on each.
 def findCommutes(df):
     dfList = []
