@@ -115,4 +115,6 @@ Via's websites states an average wait time of 5 minutes for the user, and driver
 
 For the time it takes to get from LGA to Astoria, and Astoria to Upper Manhattan, a flat 20 minute and 30 minute transit time was used, respectively. This estimate could be further refined if historical traffic delay data was used, or if an accurate NYC traffic model could be utilized.
 
+The nyc.gov is also missing out on a significant portion of real-world data: For-Hire Vehicle (FHV) rides. While nyc.gov does have data for FHV rides, they only state the pickup time, and occasionally pickup neighborhood (never drop-off neighborhood). Thus our current calculations are excluding services such as Uber, Lyft, and of course Via. So our total number of rides (and hence potential market) is larger than presented here, but we must also be wary of saturation and self-competition in neighborhoods where Via already has a presence.
+
 In summary, my model gives an upper bound for carpooling efficiency from historical taxi data, which can be used as a barometer for Via service potential. With further information from Via such as business goals, extant Via-cle data, and routing models, I can further increase its accuracy. 
