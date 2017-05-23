@@ -57,8 +57,8 @@ def readData(filePath,rawDataFolder,lyr_in, idx_reg, zoneLookup, ctran):
         #Gathering Trip Data. Unfortunately yellow and green cabs have different data formats.
         df = pd.DataFrame()
         if 'green' in a_file:
-            df = pd.read_csv(a_file,index_col=False, header=0, skiprows = 2, usecols=[1,2,5,6,7,8,9,10,11,12,13,14,15,17,18,19])
-            df.columns = ['pickup_datetime','dropoff_datetime','pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','passenger_count','trip_distance','fare_amount','extra','mta_tax','tip_amount','tolls_amount','improvement_surcharge','total_amount','payment_type']
+            df = pd.read_csv(a_file,index_col=False, header=0, skiprows = 2, usecols=[1,2,5,6,7,8,9,10,11,12,13,15,16,17])
+            df.columns = ['pickup_datetime','dropoff_datetime','PULocationID','DOLocationID','passenger_count','trip_distance','fare_amount','extra','mta_tax','tip_amount','tolls_amount','improvement_surcharge','total_amount','payment_type']
         elif 'yellow' in a_file:
             df = pd.read_csv(a_file,index_col=False, header=0, skiprows = 2, usecols=[1,2,3,4,7,8,9,10,11,12,13,14,15,16])
             #df.columns = ['pickup_datetime','dropoff_datetime','passenger_count','trip_distance','pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','payment_type','fare_amount','extra','mta_tax','tip_amount','tolls_amount','improvement_surcharge','total_amount']
@@ -68,7 +68,7 @@ def readData(filePath,rawDataFolder,lyr_in, idx_reg, zoneLookup, ctran):
         
         print('It took {0:0.1f} seconds to read that file'.format(time.time() - start))
 
-        df = df.apply(findNYCZones,args=(zoneLookup,),axis = 1)   
+        df = df.apply(findNYCZones,args=(zoneLookup,),axis = 1) 
         df = df.drop(['PULocationID','DOLocationID'], axis = 1)
         df['pickup_latitude'] = 0
         df['pickup_longitude'] = 0
@@ -108,7 +108,6 @@ def readData(filePath,rawDataFolder,lyr_in, idx_reg, zoneLookup, ctran):
             ((df['dropoff_neighborhood'].isin(UpperEastSide)) #Within Upper East Side 
             & (df['pickup_neighborhood'].isin(UpperEastSide)))
             ]
-
         print('It took {0:0.1f} seconds to process that file'.format(time.time() - start))
         df.to_pickle(filePath +'/processedData/'+ntpath.basename(a_file.rstrip('.csv')))
     
